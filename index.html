@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script>
+  (function() {
+    var GA_ID = 'G-975JKQ0LFR';
+    var isLocalDev = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+    if (isLocalDev) return;
+    try { if (/[?&]no_ga=0/.test(location.search)) localStorage.removeItem('no_ga'); if (/[?&]no_ga=1/.test(location.search)) localStorage.setItem('no_ga', '1'); if (localStorage.getItem('no_ga') === '1') return; } catch (e) {}
+    var gaQ = new URLSearchParams(location.search); if (gaQ.get('obs') === '1' || gaQ.get('no_ga') === '1') return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+    document.addEventListener('click', function(e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href*="booth.pm"]') : null;
+      if (!a) return;
+      gtag('event', 'booth_click', { link_url: a.href, link_id: a.id || '', link_text: (a.textContent || '').trim().slice(0, 40) });
+    });
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="写真やイラストから、記号つきのクロスステッチ図案を無料で作成。横の目数と色の数を選ぶだけで、DMC 25番刺しゅう糸の近い色番号(目安)と色ごとの目数、布のカウント別のできあがりサイズも表示。ペンで手直しして、A4で印刷・画像で保存できます。登録不要・アプリ不要、画像はアップロードされません。">
+<link rel="canonical" href="https://uuhai0625.github.io/cross-stitch-zuan/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="クロスステッチ図案メーカー|写真・イラストから無料で図案作成">
+<meta property="og:description" content="写真やイラストから、記号つきのクロスステッチ図案を無料で作成。横の目数と色の数を選ぶだけで、DMC 25番刺しゅう糸の近い色番号(目安)と色ごとの目数、布のカウント別のできあがりサイズも表示。ペンで手直しして、A4で印刷・画像で保存できます。登録不要・アプリ不要、画像はアップロードされません。">
+<meta property="og:url" content="https://uuhai0625.github.io/cross-stitch-zuan/">
+<meta property="og:image" content="https://uuhai0625.github.io/cross-stitch-zuan/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>クロスステッチ図案メーカー|写真・イラストから無料で図案作成</title>
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --panel: #ffffff;
+    --border: #e3ddd0;
+    --field-border: #6b6352;
+    --text: #26221a;
+    --muted: #5c5546;
+    --accent: #8a3b2e;
+    --accent-dark: #6a2a20;
+    --soft: #f6ebe6;
+    --ng: #b3261e;
+    --locked: #d3c8b6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  header { background: var(--accent-dark); color: #fff; padding: 24px 20px 18px; text-align: center; }
+  header h1 { margin: 0 0 6px; font-size: 1.35rem; }
+  header p { margin: 0; font-size: .9rem; }
+  main { max-width: 1180px; margin: 0 auto; padding: 22px 16px 50px; }
+  main > * { min-width: 0; }
+  .layout { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); grid-template-areas: "img pv" "set pv" "edit pv"; column-gap: 18px; align-items: start; }
+  .layout > * { min-width: 0; }
+  #img-card { grid-area: img; } #set-card { grid-area: set; } #edit-card { grid-area: edit; }
+  #pv-card { grid-area: pv; position: sticky; top: 12px; }
+  section.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+  section.card h2 { margin: 0 0 6px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .desc { color: var(--muted); font-size: .84rem; margin: 0 0 12px; }
+  .fine { color: var(--muted); font-size: .8rem; margin: 8px 0 0; }
+  .badge { display: inline-block; font-size: .7rem; padding: 2px 8px; border-radius: 999px; background: #fff1cc; color: #7a5600; font-weight: bold; }
+  .hidden { display: none !important; }
+  label.field, div.field { display: block; margin-bottom: 12px; }
+  .lbl { font-size: .85rem; font-weight: bold; display: block; }
+  .hint { font-size: .78rem; color: var(--muted); font-weight: normal; display: block; margin-top: 2px; }
+  select, input[type=number] { margin-top: 5px; min-height: 44px; border: 1px solid var(--field-border); border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; color: var(--text); width: 100%; padding: 8px 10px; }
+  input[type=range] { width: 100%; min-height: 36px; accent-color: var(--accent); }
+  .chk { display: flex; gap: 8px; align-items: flex-start; font-size: .86rem; margin: 6px 0 10px; cursor: pointer; }
+  .chk input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--accent); flex: none; }
+  .seg { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .seg label { min-height: 44px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--field-border); border-radius: 8px; padding: 6px 12px; font-size: .86rem; cursor: pointer; background: #fff; }
+  .seg label.on { border-color: var(--accent); background: var(--soft); font-weight: bold; }
+  .seg label:focus-within { outline: 2px solid var(--accent); outline-offset: 1px; }
+  fieldset.plain { border: none; padding: 0; margin: 0 0 12px; min-width: 0; }
+  fieldset.plain legend { font-size: .85rem; font-weight: bold; padding: 0; margin-bottom: 5px; }
+  .row2 { display: flex; gap: 12px; }
+  .row2 > * { flex: 1; min-width: 0; }
+  .drop { display: block; position: relative; border: 2px dashed var(--locked); border-radius: 12px; padding: 22px 14px; text-align: center; background: #fdfbf7; cursor: pointer; }
+  .drop.over { border-color: var(--accent); background: var(--soft); }
+  .drop input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+  .drop:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn { min-height: 44px; padding: 9px 16px; border-radius: 8px; font-size: .88rem; cursor: pointer; border: 1px solid var(--field-border); background: #fff; color: var(--text); font-family: inherit; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
+  .btn.small { min-height: 40px; padding: 6px 12px; font-size: .82rem; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn:focus-visible, a:focus-visible, .pal button:focus-visible, select:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+  .status { font-size: .82rem; color: var(--muted); margin-top: 6px; min-height: 1.2em; }
+  .status.err { color: var(--ng); font-weight: bold; }
+  .pv-wrap { border: 1px solid var(--border); border-radius: 8px; background: #ebe6db; overflow: auto; max-height: max(320px, calc(100vh - 300px)); }
+  .pv-empty { padding: 40px 16px; text-align: center; color: var(--muted); font-weight: bold; margin: 0; }
+  .mode-note { font-size: .82rem; margin: 0 0 6px; color: var(--accent-dark); font-weight: bold; min-height: 1.2em; }
+  .pv-wrap canvas { display: block; margin: 0 auto; }
+  .pv-wrap canvas.paint { cursor: crosshair; touch-action: none; }
+  .sum { font-size: .86rem; margin: 0 0 8px; font-weight: bold; color: var(--accent-dark); }
+  .pal { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-top: 8px; }
+  .pal button { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 8px; background: #fff; cursor: pointer; font-family: inherit; font-size: .8rem; text-align: left; color: var(--text); }
+  .pal button.on { border: 2px solid var(--accent); background: var(--soft); }
+  .sw { width: 26px; height: 26px; border-radius: 4px; border: 1px solid rgba(0,0,0,.25); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: .85rem; flex: none; }
+  table.list { border-collapse: collapse; width: 100%; font-size: .84rem; }
+  table.list th { white-space: nowrap; }
+  table.list th, table.list td { border-bottom: 1px solid var(--border); padding: 6px 6px; text-align: left; vertical-align: middle; }
+  table.list td.num { text-align: right; white-space: nowrap; }
+  table.list select { min-height: 40px; margin: 0; padding: 4px 6px; font-size: .84rem; }
+  .list-wrap { overflow-x: auto; }
+  .guide { font-size: .88rem; }
+  .guide h3 { font-size: .95rem; margin: 14px 0 4px; }
+  .guide ul, .guide ol { padding-left: 1.3em; margin: 6px 0; }
+  .guide li { margin: 4px 0; }
+  .guide table { border-collapse: collapse; font-size: .84rem; margin: 6px 0; }
+  .guide th, .guide td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; }
+  .locked-panel { border: 1px dashed var(--locked); border-radius: 10px; padding: 16px; text-align: center; color: var(--muted); background: #fdfbf7; }
+  .locked-panel .lead { color: var(--text); font-weight: bold; }
+  .locked-panel .feat-list { text-align: left; max-width: 620px; margin: 10px auto; font-size: .85rem; padding-left: 1.2em; }
+  .buy-btn { display: inline-block; margin-top: 8px; background: var(--accent-dark); color: #fff; font-weight: bold; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-size: .9rem; }
+  footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; font-size: .8rem; color: var(--muted); }
+  footer a { color: var(--muted); }
+  #printArea { display: none; }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "img" "set" "edit" "pv"; }
+    #pv-card { position: static; }
+    .pv-wrap { max-height: 60vh; }
+  }
+  @media (max-width: 600px) {
+    .row2 { flex-direction: column; gap: 0; }
+    section.card { padding: 16px 12px; }
+  }
+  @media print {
+    @page { size: A4 portrait; margin: 8mm; }
+    body.printing > * { display: none !important; }
+    body.printing > #printArea { display: block !important; }
+    #printArea img { display: block; width: 100%; height: auto; page-break-after: always; break-after: page; }
+    #printArea img:last-child { page-break-after: auto; break-after: auto; }
+  }
+</style>
+<!--ANSHIN_CSS_START--><style>:root{--anshin-w:1148px;--anshin-pad:16px}.anshin-strip,.anshin{box-sizing:border-box;width:min(var(--anshin-w),calc(100% - 2 * var(--anshin-pad)));margin-left:auto;margin-right:auto}.anshin-strip{list-style:none;margin-top:10px;margin-bottom:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:.8rem;line-height:1.5}.anshin-strip li{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:999px;background:rgba(20,120,90,.07)}.anshin-strip li.anshin-more{border:0;background:none;padding:3px 2px}.anshin-strip a,.anshin a{color:inherit}.anshin{margin-top:18px;margin-bottom:18px;padding:14px 18px;border:1px solid rgba(20,120,90,.45);border-radius:10px;background:rgba(20,120,90,.05);font-size:.86rem;line-height:1.7}.anshin h2{font-size:1rem;margin:0 0 6px}.anshin p{margin:0 0 6px}.anshin ul{margin:0;padding-left:1.2em}.anshin li{margin:3px 0}.anshin details{margin-top:6px}.anshin summary{cursor:pointer;font-weight:bold}.anshin .anshin-meta{margin:8px 0 0;font-size:.8rem;opacity:.85}@media print{.anshin,.anshin-strip{display:none!important}}</style><!--ANSHIN_CSS_END-->
+<!--UPSELL_CSS_START--><style>.upsell-top{box-sizing:border-box;width:min(var(--anshin-w,880px),calc(100% - 2 * var(--anshin-pad,16px)));margin:12px auto 0;font-size:.85rem;line-height:1.6}.upsell-top a{color:inherit}.upsell-assure{list-style:none;margin:12px 0 10px;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;font-size:.8rem;line-height:1.5}.upsell-assure li{padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:12px;background:rgba(20,120,90,.06)}.upsell-terms{margin:8px 0 0;font-size:.78rem;line-height:1.6;opacity:.85}.upsell-toast{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:9999;box-sizing:border-box;width:min(520px,calc(100% - 24px));padding:14px 56px 14px 16px;border-radius:12px;background:#fff;color:#222;border:1px solid #c9c2d6;box-shadow:0 6px 24px rgba(0,0,0,.18);font-size:.88rem;line-height:1.6}.upsell-toast p{margin:0 0 6px;font-weight:bold}.upsell-toast ul{margin:0 0 10px;padding-left:1.2em}.upsell-toast li{margin:2px 0}.upsell-toast .upsell-note{display:block;margin-top:6px;font-size:.75rem;color:#555}.upsell-toast .upsell-go{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;background:#c9283e;color:#fff;font-weight:bold;text-decoration:none}.upsell-toast .upsell-go:focus-visible,.upsell-toast .upsell-x:focus-visible{outline:3px solid #2560c4;outline-offset:2px}.upsell-toast .upsell-x{position:absolute;top:4px;right:4px;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:#555;font-size:1.3rem;line-height:1;cursor:pointer}.upsell-inline{white-space:nowrap;color:inherit;text-decoration:underline;text-underline-offset:2px}@media print{.upsell-top,.upsell-assure,.upsell-terms,.upsell-toast,.upsell-inline{display:none!important}}</style><!--UPSELL_CSS_END-->
+</head>
+<body>
+
+<header>
+  <h1>クロスステッチ図案メーカー(写真・イラストから図案作成)</h1>
+  <p>写真やイラストから、記号つきのクロスステッチ図案を作ります。色数と目数を選ぶだけ。DMC 25番刺しゅう糸の近い色番号(目安)と、色ごとの目数も出ます。登録不要・スマホでも使えます</p>
+</header>
+<!--ANSHIN_STRIP_START-->
+<ul class="anshin-strip" aria-label="データの扱い">
+  <li><span aria-hidden="true">✓</span> 入力内容はこの端末の中だけで処理</li>
+  <li><span aria-hidden="true">✓</span> 登録・ログイン不要</li>
+  <li><span aria-hidden="true">✓</span> 仕組みを公開中</li>
+  <li class="anshin-more"><a href="#anshin">データの扱いをくわしく</a></li>
+</ul>
+<!--ANSHIN_STRIP_END-->
+<!--UPSELL_TOP_START--><p class="upsell-top no-print" id="upsellTop">このページは無料のまま使えます。機能を増やしたい方は <a href="#pro-section">買い切り版(¥100・1回払い)<span aria-hidden="true"> ↓</span></a></p><!--UPSELL_TOP_END-->
+
+<main>
+<div class="layout">
+
+  <section class="card" id="img-card">
+    <h2>① 画像を選ぶ</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="inFile" accept="image/png,image/jpeg,image/webp" aria-describedby="dropHint">
+      <strong id="dropTitle">ここを押して画像を選ぶ</strong><br><span class="hint" id="dropHint">パソコンはドラッグ&ドロップでもOK(PNG・JPEG・WebP)。画像はこの端末の中だけで処理し、アップロードしません</span>
+    </label>
+    <div class="status" id="imgSt" role="status"></div>
+    
+  </section>
+
+  <section class="card" id="set-card">
+    <h2>② 大きさと色</h2>
+    <div class="field"><label class="lbl" for="inW">横の目数 <span id="wVal"></span></label>
+      <input type="range" id="inW" min="10" max="80" step="1" value="50" aria-describedby="wHint">
+      <span class="hint" id="wHint"></span>
+    </div>
+    <div class="field"><label class="lbl" for="inK">色の数 <span id="kVal"></span></label>
+      <input type="range" id="inK" min="2" max="16" step="1" value="10" aria-describedby="kHint">
+      <span class="hint" id="kHint"></span>
+    </div>
+    <label class="field"><span class="lbl">布の目の細かさ</span>
+      <select id="inFabric">
+        <option value="11">11カウント(10cmで約43目)</option>
+        <option value="14" selected>14カウント(10cmで約55目)</option>
+        <option value="16">16カウント(10cmで約63目)</option>
+        <option value="18">18カウント(10cmで約70目)</option>
+      </select>
+      <span class="hint" id="sizeHint"></span>
+    </label>
+    <label class="chk"><input type="checkbox" id="optWhite"> <span>白っぽい背景は刺さない(布の色を生かす)<span class="hint">透明なところは、いつも刺さない扱いです</span></span></label>
+    <label class="chk"><input type="checkbox" id="optClean" checked> <span>ぽつんと1目だけの色を減らす<span class="hint">まわりと違う色の1目を、まわりの色にそろえます(糸の替えが減ります)</span></span></label>
+    <div class="status" id="genSt" role="status"></div>
+  </section>
+
+  <section class="card" id="edit-card">
+    <h2>③ 手直し</h2>
+    <fieldset class="plain">
+      <legend>道具(図案をなぞったときにすること)</legend>
+      <div class="seg" id="toolSeg">
+        <label class="on"><input type="radio" name="tool" value="view" checked> 見るだけ</label>
+        <label><input type="radio" name="tool" value="pen"> ペン</label>
+        <label><input type="radio" name="tool" value="erase"> 消しゴム(刺さない)</label>
+      </div>
+    </fieldset>
+    <p class="fine" style="margin-top:0;">ペンは、下の色を選んでから図案をなぞります。②の設定を変えると、手直しは消えて作り直しになります。</p>
+    <div class="pal" id="pal" role="group" aria-label="ペンの色"><p class="fine" style="margin:0;">①で画像を選ぶと、ここに色が並びます。</p></div>
+    <div class="btn-row"><button type="button" class="btn small" id="undoBtn" disabled>1つ戻す</button></div>
+  </section>
+
+  <section class="card" id="pv-card">
+    <h2>図案</h2>
+    <p class="sum" id="sum"></p>
+    <div class="row2">
+      <label class="field"><span class="lbl">表示</span>
+        <select id="inView">
+          <option value="sym" selected>色+記号</option>
+          <option value="bw">記号だけ(白黒)</option>
+          <option value="img">できあがりのイメージ</option>
+        </select>
+      </label>
+      <label class="field"><span class="lbl">表示の大きさ</span><input type="range" id="inCell" min="4" max="30" step="1" value="12" aria-valuetext="1目12ピクセル"></label>
+    </div>
+    <p class="mode-note" id="modeNote" role="status"></p>
+    <div class="pv-wrap" id="pvWrap"><p class="pv-empty" id="pvEmpty">①で画像を選ぶと、ここに図案が出ます</p><canvas id="cv" width="600" height="400" role="img" aria-label="クロスステッチの図案" class="hidden"></canvas></div>
+    <p class="fine">太い線は10目ごと、ふちの三角は図案のまん中です。</p>
+  </section>
+
+</div>
+
+  <section class="card" id="list-card">
+    <h2>④ 使う糸の一覧</h2>
+    <p class="desc">糸番号は、画面の色に近いDMC 25番刺しゅう糸の目安です(DMC社の公式ツールではなく、糸の色データも目安です)。実物の色は糸見本で確かめてください。番号は近い順に8つから選び直せます。色の名前はDMCの英語名です。</p>
+    <div class="list-wrap"><table class="list" id="list"><thead><tr><th>記号</th><th>糸番号</th><th>色の名前</th><th class="num">目数</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="card" id="out-card">
+    <h2>⑤ 保存・印刷</h2>
+    <div class="btn-row" style="margin-top:0;">
+      <button type="button" class="btn primary" id="printBtn" disabled>印刷する(A4)</button>
+      <button type="button" class="btn primary" id="pngBtn" disabled>画像(PNG)で保存</button>
+      
+    </div>
+    <p class="fine" id="printNote"></p>
+    <div class="status" id="outSt" role="status"></div>
+  </section>
+
+  <section class="card" id="pro-section">
+    <h2>ページ分け印刷・続きから保存 <span class="badge">買い切り版 ¥100(税込)</span></h2>
+    <div class="locked-panel">
+      <p class="lead">パソコンで、図案をA4のページに分けて大きく印刷。</p>
+      <p>このページの機能は無料でそのまま使えます。買い切り版(ダウンロード購入)では、次の機能が増えます:</p>
+      <ul class="feat-list">
+        <li><strong>A4にページを分けて印刷</strong>: 1ページ50×70目ずつ、1目約3.4mmの大きさで印刷(無料版は1ページに縮めて印刷)</li>
+        <li><strong>続きから使えるように保存</strong>: 手直しした図案をファイルに保存して、あとで開き直せます</li>
+        <li><strong>横250目・40色まで</strong>(無料版は横80目・16色まで)</li>
+        <li><strong>印刷・画像に「無料版」のツール名が入りません</strong>(糸の色データの出典は入ります)</li>
+        <li><strong>パソコンで使うHTMLファイルです</strong>(スマホでの動作は保証していません)。ダブルクリックで開くだけ、ネットにつながっていなくても使えます</li>
+      </ul>
+<!--UPSELL_ASSURE_START--><ul class="upsell-assure" aria-label="買い切り版について"><li>¥100(税込)の1回払い・月額なし</li><li>パソコン向けのHTMLファイル(スマホでは開けない機種あり)</li><li>ネットにつながっていなくても動く</li><li>BOOTHで購入(クレジットカード・楽天ペイは手数料なし、コンビニ・銀行払いは別途手数料)</li></ul><!--UPSELL_ASSURE_END-->
+      <a class="buy-btn" href="https://uuhai0625.booth.pm/items/8994389" id="buyLink" target="_blank" rel="noopener">パソコン用の買い切り版を見る(BOOTH・新しいタブ)</a><!--UPSELL_TERMS_START--><p class="upsell-terms">販売者の情報・返品などの販売条件は、BOOTHの商品ページでご確認ください。BOOTHでの購入にはpixivのアカウントが必要です。</p><!--UPSELL_TERMS_END-->
+    </div>
+  </section>
+
+  <section class="card guide" id="guide">
+    <h2>写真からクロスステッチの図案を作るには</h2>
+    <ol>
+      <li>①で写真やイラストを選びます。顔のアップや、背景がすっきりした画像ほど図案にしやすくなります。</li>
+      <li>②で横の目数と色の数を決めます。下の「できあがりの大きさ」を見ながら、布の目の細かさも選びます。</li>
+      <li>図案を見て、目や口など大事なところは③のペンで手直しします。</li>
+      <li>④の一覧で糸をそろえ、⑤で印刷します。</li>
+    </ol>
+    <h3>目数と色数の目安</h3>
+    <ul>
+      <li><strong>小さなワンポイント</strong>: 横20〜40目・5〜8色くらい。</li>
+      <li><strong>ペットや人の顔</strong>: 横50〜80目・10〜20色くらいあると、表情が残りやすくなります(無料版は16色まで)。</li>
+      <li>色を増やすほど写真に近づきますが、糸の数と替える手間も増えます。まずは少ない色から試すのがおすすめです。</li>
+    </ul>
+    <h3>布の目の細かさと、できあがりの大きさ</h3>
+    <table>
+      <tr><th>布(アイーダなど)</th><th>10cmあたりの目数</th><th>横50目のときの幅</th></tr>
+      <tr><td>11カウント</td><td>約43目</td><td>約11.5cm</td></tr>
+      <tr><td>14カウント</td><td>約55目</td><td>約9.1cm</td></tr>
+      <tr><td>16カウント</td><td>約63目</td><td>約7.9cm</td></tr>
+      <tr><td>18カウント</td><td>約70目</td><td>約7.1cm</td></tr>
+    </table>
+    <p class="fine">カウントは1インチ(2.54cm)あたりの目数です。お店の表記(55目・60目・70目など)とは少しずれることがあります。まわりに縫い代や額のぶんの余白をとって布を用意してください。</p>
+    <p class="fine">25番糸は6本の細い糸をより合わせたものです。14カウントなら2本取りが目安です(11カウントは3本、18カウントは1〜2本)。</p>
+    <h3>図案の読み方</h3>
+    <ul>
+      <li>1マスが1目(クロス1つ)です。同じ記号のマスを同じ糸で刺します。</li>
+      <li>太い線は10目ごと、ふちの数字は何目めかを表します。ふちの三角は図案のまん中です。布のまん中から刺し始めると、布からはみ出しにくくなります。</li>
+      <li>空白のマスは刺しません(布の色が出ます)。</li>
+    </ul>
+    <h3>よくある疑問</h3>
+    <ul>
+      <li><strong>糸番号は正確?</strong> 画面の色からいちばん近い番号を選んだ目安です。画面と実物の糸では見え方が違うので、糸見本やお店で確かめてください。④の一覧で近い番号に選び直せます。</li>
+      <li><strong>画像はどこかに送られる?</strong> 送られません。読み込みも図案づくりも、このブラウザの中だけで行います。</li>
+      <li><strong>人の写真やキャラクターを図案にしてもいい?</strong> 自分で撮った写真や、自分で考えたオリジナルの絵なら安心です。他の人が撮った写真(写真館の写真など)や、他の人のイラスト・アニメやゲームのキャラクター、ネットで見つけた画像は、自分で刺して楽しむだけなら問題になりにくいですが、図案や作品を配る・売る・SNSなどで公開するときは、権利を持っている人や会社の許可が必要です(公式のガイドラインがあれば確認を)。人の顔を図案にして公開・販売するときは、写っている人の了解もとりましょう。</li>
+    </ul>
+  </section>
+
+</main>
+
+<!--ANSHIN_START-->
+<section class="anshin" id="anshin" aria-labelledby="anshin-title">
+  <h2 id="anshin-title">データの扱いについて</h2>
+  <p>このページには、入力した内容を受け取る仕組みがありません。文字も画像も、あなたのスマホやパソコンの中だけで処理されます。</p>
+  <ul>
+    <li>画像などのファイルを選んでも、アップロードはされません。端末の中で読み込んで処理します。</li>
+    <li>会員登録・ログイン・メールアドレスの入力はありません。</li>
+    <li>自分で確かめたい方へ: ページを開いたあと機内モードにしても、そのまま使えます。</li>
+  </ul>
+  <details>
+    <summary>もっとくわしく(保存・アクセス解析・公開について)</summary>
+    <ul>
+      <li>保存されるデータは、この端末のこのブラウザの中にだけ残ります(localStorage・sessionStorage)。共用のパソコンでは使い終わったら消してください。</li>
+      <li>アクセス解析(Google Analytics)のため、見たページのURL・参照元・端末やブラウザの種類・おおよその地域(IPアドレスから推定)・Cookieの識別子・BOOTHへのリンクのクリック・どのボタンを押したか(回数や選んだ設定を含む)がGoogleに送られます。目的は利用状況の把握です。入力した文字や画像は送りません。(<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用</a>/<a href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener">計測を止めるアドオン</a>。止めてもツールはそのまま使えます)</li>
+      <li>このツールの結果や作成物は目安です。入稿・契約・販売などの前には、印刷所や公式の情報でご確認ください。</li>
+      <li>処理の中身はすべて公開しています(詳しい方向け: <a href="https://github.com/uuhai0625/cross-stitch-zuan" target="_blank" rel="noopener">GitHub</a>)。</li>
+    </ul>
+  </details>
+  <p class="anshin-meta">作っている人: ウーハイ(個人開発)/不具合・ご質問は<a href="https://x.com/uuhai0625" target="_blank" rel="noopener">X(@uuhai0625)</a>へ/<a href="https://uuhai0625.github.io/" target="_blank" rel="noopener">ほかのツール</a>/この説明の更新日: 2026-10-13</p>
+</section>
+<!--ANSHIN_END-->
+
+<footer>
+  <p id="privacyNote">本ツールは完全にブラウザ内で動作し、選んだ画像はどこにも送信されません。</p>
+  <p>糸の色データ: <a href="https://github.com/makebead/craft-color-codes" target="_blank" rel="noopener">craft-color-codes</a> by <a href="https://makebead.com/" target="_blank" rel="noopener">MakeBead</a>(<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener">CC BY 4.0</a>)。DMC 25番のデータを抜き出し、形式を変えて一部の表記を直して使っています。DMCはフランスのDMC社の商標です。本ツールはDMC社とは関係のない、個人が制作した非公式ツールです。</p>
+  <p><a href="https://uuhai0625.booth.pm/" target="_blank" rel="noopener">他のツールも見る(BOOTHショップ)</a></p>
+  <p>不具合・ご要望は X <a href="https://x.com/uuhai0625" target="_blank" rel="noopener">@uuhai0625</a> まで。</p>
+  <p class="related-tools no-print">関連する無料ツール: <a href="https://uuhai0625.github.io/handmade-genka/" target="_blank" rel="noopener">ハンドメイド原価計算</a> ・ <a href="https://uuhai0625.github.io/nefuda-maker/" target="_blank" rel="noopener">値札メーカー</a> ・ <a href="https://uuhai0625.github.io/accessory-daishi/" target="_blank" rel="noopener">アクセサリー台紙メーカー</a> ・ <a href="https://uuhai0625.github.io/#free-tools">ツール一覧</a></p>
+</footer>
+
+<div id="printArea"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var EDITION = "free"; // "full" で買い切り完全版
+
+  function track(name, params) {
+    if (!window.dataLayer) return;
+    (function () { window.dataLayer.push(arguments); })("event", name, params || {});
+  }
+  var $ = function (id) { return document.getElementById(id); };
+  function setSt(id, msg, err) { var e = $(id); if (!e) return; e.textContent = msg; e.classList.toggle("err", !!err); }
+
+  var MAX_W = 80, MAX_K = 16, CREDIT = true, PAGE_SPLIT = false;
+  
+  var MAX_PIXELS = 50000000, PAGE_COLS = 50, PAGE_ROWS = 70;
+  var SYMS = "●A■2▲K◆5★M○7□R△X◇N☆H+E×T#4=P%S@UBCDFGJLVWYZ3689";
+
+  // ===== 糸の色データ(DMC 25番、craft-color-codes by MakeBead、CC BY 4.0) =====
+  var DMC = "3713|FFE2E2|Salmon Very Light;761|FFC9C9|Salmon Light;760|F5ADAD|Salmon;3712|F18787|Salmon Medium;3328|E36D6D|Salmon Dark;347|BF2D2D|Salmon Very Dark;353|FED7CC|Peach;352|FD9C97|Coral Light;351|E96A67|Coral;350|E04848|Coral Medium;349|D21035|Coral Dark;817|BB051F|Coral Red Very Dark;3708|FFCBD5|Melon Light;3706|FFADBC|Melon Medium;3705|FF7992|Melon Dark;3801|E74967|Melon Very Dark;666|E31D42|Bright Red;321|C72B3B|Red;304|B71F33|Red Medium;498|A7132B|Red Dark;816|970B23|Garnet;815|87071F|Garnet Medium;814|7B001B|Garnet Dark;894|FFB2BB|Carnation Very Light;893|FC90A2|Carnation Light;892|FF798C|Carnation Medium;891|FF5773|Carnation Dark;818|FFDFD9|Baby Pink;957|FDB5B5|Geranium Pale;956|FF9191|Geranium;309|C12041|Rose Dark;963|FFD7D7|Dusty Rose Ultra Very Light;3716|FFBDBD|Dusty Rose Medium Very Light;962|E68A8A|Dusty Rose Medium;961|CF7373|Dusty Rose Dark;3833|EA8699|Raspberry Light;3832|DB556E|Raspberry Medium;3831|B32F48|Raspberry Dark;777|913546|Raspberry Very Dark;819|FFEEEB|Baby Pink Light;3326|FBADB4|Rose Light;776|FCB0B9|Pink Medium;899|F27688|Rose Medium;335|EE546E|Rose;326|B33B4B|Rose Very Dark;151|F0CED4|Dusty Rose Very Light;3354|E4A6AC|Dusty Rose Light;3733|E8879B|Dusty Rose;3731|DA6783|Dusty Rose Very Dark;3350|BC4365|Dusty Rose Ultra Dark;150|AB0249|Dusty Rose Ultra Very Dark;3689|FBBFC2|Mauve Light;3688|E7A9AC|Mauve Medium;3687|C96B70|Mauve;3803|AB3357|Mauve Dark;3685|881531|Mauve Very Dark;605|FFC0CD|Cranberry Very Light;604|FFB0BE|Cranberry Light;603|FFA4BE|Cranberry;602|E24874|Cranberry Medium;601|D1286A|Cranberry Dark;600|CD2F63|Cranberry Very Dark;3806|FF8CAE|Cyclamen Pink Light;3805|F3478B|Cyclamen Pink;3804|E02876|Cyclamen Pink Dark;3609|F4AED5|Plum Ultra Light;3608|EA9CC4|Plum Very Light;3607|C54989|Plum Light;718|9C2462|Plum;917|9B1359|Plum Medium;915|820043|Plum Dark;225|FFDFD5|Shell Pink Ultra Very Light;224|EBB7AF|Shell Pink Very Light;152|E2A099|Shell Pink Medium Light;223|CC847C|Shell Pink Light;3722|BC6C64|Shell Pink Medium;3721|A14B51|Shell Pink Dark;221|883E43|Shell Pink Very Dark;778|DFB3BB|Antique Mauve Very Light;3727|DBA9B2|Antique Mauve Light;316|B7737F|Antique Mauve Medium;3726|9B5B66|Antique Mauve Dark;315|814952|Antique Mauve Medium Dark;3802|714149|Antique Mauve Very Darkv;902|822637|Garnet Very Dark;3743|D7CBD3|Antique Violet Very Light;3042|B79DA7|Antique Violet Light;3041|956F7C|Antique Violet Medium;3740|785762|Antique Violet Dark;3836|BA91AA|Grape Light;3835|946083|Grape Medium;3834|72375D|Grape Dark;154|572433|Grape Very Dark;211|E3CBE3|Lavender Light;210|C39FC3|Lavender Medium;209|A37BA7|Lavender Dark;208|835B8B|Lavender Very Dark;3837|6C3A6E|Lavender Ultra Dark;327|633666|Violet Dark;153|E6CCD9|Violet Very Light;554|DBB3CB|Violet Light;553|A3638B|Violet;552|803A6B|Violet  Medium;550|5C184E|Violet Very Dark;3747|D3D7ED|Blue Violet Very Light;341|B7BFDD|Blue Violet Light;156|A3AED1|Blue Violet Medium Light;340|ADA7C7|Blue Violet Medium;155|9891B6|Blue Violet Medium Dark;3746|776B98|Blue Violet Dark;333|5C5478|Blue Violet Very Dark;157|BBC3D9|Cornflower Blue Very Light;794|8F9CC1|Cornflower Blue Light;793|707DA2|Cornflower Blue Medium;3807|60678C|Cornflower Blue;792|555B7B|Cornflower Blue Dark;158|4C526E|Cornflower Blue  Very Dark;791|464563|Cornflower Blue Very Dark;3840|B0C0DA|Lavender Blue Light;3839|7B8EAB|Lavender Blue Medium;3838|5C7294|Lavender Blue Dark;800|C0CCDE|Delft Blue Pale;809|94A8C6|Delft Blue;799|748EB6|Delft Blue Medium;798|466A8E|Delft Blue Dark;797|13477D|Royal Blue;796|11416D|Royal Blue Dark;820|0E365C|Royal Blue Very Dark;162|DBECF5|Blue Ultra Very Light;827|BDDDED|Blue Very Light;813|A1C2D7|Blue Light;826|6B9EBF|Blue Medium;825|4781A5|Blue Dark;824|396987|Blue Very Dark;996|30C2EC|Electric Blue Medium;3843|14AAD0|Electric Blue;995|2696B6|Electric Blue Dark;3846|06E3E6|Turquoise Bright Light;3845|04C4CA|Turquoise Bright Medium;3844|12AEBA|Turquoise Bright Dark;159|C7CAD7|Blue Gray Light;160|999FB7|Blue Gray Medium;161|7880A4|Blue Gray;3756|EEFCFC|Baby Blue Ultra Very Light;775|D9EBF1|Baby Blue Very Light;3841|CDDFED|Baby Blue Pale;3325|B8D2E6|Baby Blue Light;3755|93B4CE|Baby Blue;334|739FC1|Baby Blue Medium;322|5A8FB8|Baby Blue Dark;312|35668B|Baby Blue Very Dark;803|2C597C|Baby Blue Ultra Very Dark;336|253B73|Navy Blue;823|213063|Navy Blue Dark;939|1B2853|Navy Blue Very Dark;3753|DBE2E9|Antique Blue Ultra Very Light;3752|C7D1DB|Antique Blue Very Light;932|A2B5C6|Antique Blue Light;931|6A859E|Antique Blue Medium;930|455C71|Antique Blue Dark;3750|384C5E|Antique Blue Very Dark;828|C5E8ED|Sky Blue Very Light;3761|ACD8E2|Sky Blue Light;519|7EB1C8|Sky Blue;518|4F93A7|Wedgewood Light;3760|3E85A2|Wedgewood Medium;517|3B768F|Wedgewood Dark;3842|32667C|Wedgewood Very Dark;311|1C5066|Wedgewood Ultra Very Dark;747|E5FCFD|Peacock Blue Very Light;3766|99CFD9|Peacock Blue Light;807|64ABBA|Peacock Blue;806|3D95A5|Peacock Blue Dark;3765|347F8C|Peacock Blue Very Dark;3811|BCE3E6|Turquoise Very Light;598|90C3CC|Turquoise Light;597|5BA3B3|Turquoise;3810|488E9A|Turquoise Dark;3809|3F7C85|Turquoise Vy Dark;3808|366970|Turquoise Ultra Very Dark;928|DDE3E3|Gray Green Very Light;927|BDCBCB|Gray Green Light;926|98AEAE|Gray Green Medium;3768|657F7F|Gray Green Dark;924|566A6A|Gray Green Vy Dark;3849|52B3A4|Teal Green Light;3848|559392|Teal Green Medium;3847|347D75|Teal Green Dark;964|A9E2D8|Sea Green Light;959|59C7B4|Sea Green Medium;958|3EB6A1|Sea Green Dark;3812|2F8C84|Sea Green Very Dark;3851|49B3A1|Green Bright Light;943|3D9384|Green Bright Medium;3850|378477|Green Bright Dark;993|90C0B4|Aquamarine Very Light;992|6FAE9F|Aquamarine Light;3814|508B7D|Aquamarine;991|477B6E|Aquamarine Dark;966|B9D7C0|Jade Ultra Very Light;564|A7CDAF|Jade Very Light;563|8FC098|Jade Light;562|53976A|Jade Medium;505|338362|Jade Green;3817|99C3AA|Celadon Green Light;3816|65A57D|Celadon Green;163|4D8361|Celadon Green Medium;3815|477759|Celadon Green Dark;561|2C6A45|Celadon Green VD;504|C4DECC|Blue Green Very Light;3813|B2D4BD|Blue Green Light;503|7BAC94|Blue Green Medium;502|5B9071|Blue Green;501|396F52|Blue Green Dark;500|044D33|Blue Green Very Dark;955|A2D6AD|Nile Green Light;954|88BA91|Nile Green;913|6DAB77|Nile Green Medium;912|1B9D6B|Emerald Green Light;911|189065|Emerald Green Medium;910|187E56|Emerald Green Dark;909|156F49|Emerald Green Very Dark;3818|115A3B|Emerald Green Ultra Very Dark;369|D7EDCC|Pistachio Green Very Light;368|A6C298|Pistachio Green Light;320|69885A|Pistachio Green Medium;367|617A52|Pistachio Green Dark;319|205F2E|Pistachio Grn Very Dark;890|174923|Pistachio Grn Ultra Very Dark;164|C8D8B8|Forest Green Light;989|8DA675|Forest Green;988|738B5B|Forest Green Medium;987|587141|Forest Green Dark;986|405230|Forest Green Very Dark;772|E4ECD4|Yellow Green Very Light;3348|CCD9B1|Yellow Green Light;3347|71935C|Yellow Green Medium;3346|406A3A|Hunter Green;3345|1B5915|Hunter Green Dark;895|1B5300|Hunter Green Very Dark;704|9ECF34|Chartreuse Bright;703|7BB547|Chartreuse;702|47A72F|Kelly Green;701|3F8F29|Green Light;700|07731B|Green Bright;699|056517|Green;907|C7E666|Parrot Green Light;906|7FB335|Parrot Green Medium;905|628A28|Parrot Green Dark;904|557822|Parrot Green Very Dark;472|D8E498|Avocado Green Ultra Light;471|AEBF79|Avocado Grn Very Light;470|94AB4F|Avocado Grn Light;469|72843C|Avocado Green;937|627133|Avocado Green Medium;936|4C5826|Avocado Green Very Dark;935|424D21|Avocado Green Dark;934|313919|Avocado Grn Black;523|ABB197|Fern Green Light;3053|9CA482|Green Gray;3052|889268|Green Gray Medium;3051|5F6648|Green Gray Dark;524|C4CDAC|Fern Green Very Light;522|969E7E|Fern Green;520|666D4F|Fern Green Dark;3364|83975F|Pine Green;3363|728256|Pine Green Medium;3362|5E6B47|Pine Green Dark;165|EFF4A4|Moss Green Very Light;3819|E0E868|Moss Green Light;166|C0C840|Moss Green Medium Light;581|A7AE38|Moss Green;580|888D33|Moss Green Dark;734|C7C077|Olive Green Light;733|BCB34C|Olive Green Medium;732|948C36|Olive Green;731|938B37|Olive Green Dark;730|827B30|Olive Green Very Dark;3013|B9B982|Khaki Green Light;3012|A6A75D|Khaki Green Medium;3011|898A58|Khaki Green Dark;372|CCB784|Mustard Light;371|BFA671|Mustard;370|B89D64|Mustard Medium;834|DBBE7F|Golden Olive Very Light;833|C8AB6C|Golden Olive Light;832|BD9B51|Golden Olive;831|AA8F56|Golden Olive Medium;830|8D784B|Golden Olive Dark;829|7E6B42|Golden Olive Very Dark;613|DCC4AA|Drab Brown Very Light;612|BC9A78|Drab Brown Light;611|967656|Drab Brown;610|796047|Drab Brown Dark;3047|E7D6C1|Yellow Beige Light;3046|D8BC9A|Yellow Beige Medium;3045|BC966A|Yellow Beige Dark;167|A77C49|Yellow Beige Very Dark;746|FCFCEE|Off White;677|F5ECCB|Old Gold Very Light;422|C69F7B|Hazelnut Brown Light;3828|B78B61|Hazelnut Brown;420|A07042|Hazelnut Brown Dark;869|835E39|Hazelnut Brown Very Dark;728|E4B468|Topaz;783|CE9124|Topaz Medium;782|AE7720|Topaz Dark;781|A26D20|Topaz Very Dark;780|94631A|Topaz Ultra Very Dark;676|E5CE97|Old Gold Light;729|D0A53E|Old Gold Medium;680|BC8D0E|Old Gold Dark;3829|A98204|Old Gold Vy Dark;3822|F6DC98|Straw Light;3821|F3CE75|Straw;3820|DFB65F|Straw Dark;3852|CD9D37|Straw Very Dark;445|FFFB8B|Lemon Light;307|FDED54|Lemon;973|FFE300|Canary Bright;444|FFD600|Lemon Dark;3078|FDF9CD|Golden Yellow Very Light;727|FFF1AF|Topaz Very Light;726|FDD755|Topaz Light;725|FFC840|Topaz Medium Light;972|FFB515|Canary Deep;745|FFE9AD|Yellow Pale Light;744|FFE793|Yellow Pale;743|FED376|Yellow Medium;742|FFBF57|Tangerine Light;741|FFA32B|Tangerine Medium;740|FF8B00|Tangerine;970|F78B13|Pumpkin Light;971|F67F00|Pumpkin;947|FF7B4D|Burnt Orange;946|EB6307|Burnt Orange Medium;900|D15807|Burnt Orange Dark;967|FFDED5|Apricot Very Light;3824|FECDC2|Apricot Light;3341|FCAB98|Apricot;3340|FF836F|Apricot Medium;608|FD5D35|Burnt Orange Bright;606|FA3203|Orange Red Bright;951|FFE2CF|Tawny Light;3856|FFD3B5|Mahogany Ultra Very Light;722|F7976F|Orange Spice Light;721|F27842|Orange Spice Medium;720|E55C1F|Orange Spice Dark;3825|FDBD96|Pumpkin Pale;922|E27323|Copper Light;921|C66218|Copper;920|AC5414|Copper Medium;919|A64510|Red Copper;918|82340A|Red Copper Dark;3770|FFEEE3|Tawny Vy Light;945|FBD5BB|Tawny;402|F7A777|Mahogany Very Light;3776|CF7939|Mahogany Light;301|B35F2B|Mahogany Medium;400|8F430F|Mahogany Dark;300|6F2F00|Mahogany Very Dark;3823|FFFDE3|Yellow Ultra Pale;3855|FAD396|Autumn Gold Light;3854|F2AF68|Autumn Gold Medium;3853|F29746|Autumn Gold Dark;3827|F7BB77|Golden Brown Pale;977|DC9C56|Golden Brown Light;976|C28142|Golden Brown Medium;3826|AD7239|Golden Brown;975|914F12|Golden Brown Dark;948|FEE7DA|Peach Very Light;754|F7CBBF|Peach Light;3771|F4BBA9|Terra Cotta Ultra Very Light;758|EEAA9B|Terra Cotta Very Light;3778|D98978|Terra Cotta Light;356|C56A5B|Terra Cotta Medium;3830|B95544|Terra Cotta;355|984436|Terra Cotta Dark;3777|863022|Terra Cotta Very Dark;3779|F8CAC8|Rosewood Ultra Very Light;3859|BA8B7C|Rosewood Light;3858|964A3F|Rosewood Medium;3857|68251A|Rosewood Dark;3774|F3E1D7|Desert Sand Very Light;950|EED3C4|Desert Sand Light;3064|C48E70|Desert Sand;407|BB8161|Desert Sand Medium;3773|B67552|Desert Sand Dark;3772|A06C50|Desert Sand Very Dark;632|875539|Desert Sand Ultra Very Dark;453|D7CECB|Shell Gray Light;452|C0B3AE|Shell Gray Medium;451|917B73|Shell Gray Dark;3861|A68881|Cocoa Light;3860|7D5D57|Cocoa;779|624B45|Cocoa Dark;712|FFFBEF|Cream;739|F8E4C8|Tan Ultra Very Light;738|ECCC9E|Tan Very Light;437|E4BB8E|Tan Light;436|CB9051|Tan;435|B87748|Brown Very Light;434|985E33|Brown Light;433|7A451F|Brown Medium;801|653919|Coffee Brown Dark;898|492A13|Coffee Brown Very Dark;938|361F0E|Coffee Brown Ultra Dark;3371|1E1108|Black Brown;543|F2E3CE|Beige Brown Ultra Very Light;3864|CBB69C|Mocha Beige Light;3863|A4835C|Mocha Beige Medium;3862|8A6E4E|Mocha Beige Dark;3031|4B3C2A|Mocha Brown Very Dark;B5200|FFFFFF|Snow White;Blanc|FCFBF8|White;3865|F9F7F1|Winter White;Ecru|F0EADA|Ecru;822|E7E2D3|Beige Gray Light;644|DDD8CB|Beige Gray Medium;642|A49878|Beige Gray Dark;640|857B61|Beige Gray Very Dark;3787|625D50|Brown Gray Dark;3021|4F4B41|Brown Gray Very Dark;3024|EBEAE7|Brown Gray Very Light;3023|B1AA97|Brown Gray Light;3022|8E9078|Brown Gray Medium;535|636458|Ash Gray Very Light;3033|E3D8CC|Mocha Brown Very Light;3782|D2BCA6|Mocha Brown Light;3032|B39F8B|Mocha Brown Medium;3790|7F6A55|Beige Gray Ultra Dark;3781|6B5743|Mocha Brown Dark;3866|FAF6F0|Mocha Brown Ultra Very Light;842|D1BAA1|Beige Brown Very Light;841|B69B7E|Beige Brown Light;840|9A7C5C|Beige Brown Medium;839|675541|Beige Brown Dark;838|594937|Beige Brown Very Dark;3072|E6E8E8|Beaver Gray Very Light;648|BCB4AC|Beaver Gray Light;647|B0A69C|Beaver Gray Medium;646|877D73|Beaver Gray Dark;645|6E655C|Beaver Gray Very Dark;844|484848|Beaver Gray Ultra Dark;762|ECECEC|Pearl Gray Very Light;415|D3D3D6|Pearl Gray;318|ABABAB|Steel Gray Light;414|8C8C8C|Steel Gray Dark;168|D1D1D1|Pewter Very Light;169|848484|Pewter Light;317|6C6C6C|Pewter Gray;413|565656|Pewter Gray Dark;3799|424242|Pewter Gray Very Dark;310|000000|Black;01|E3E3E6|White Tin;02|D7D7D8|Tin;03|B8B8BB|Tin Medium;04|AEAEB1|Tin Dark;05|E3CCBE|Driftwood Light;06|DCC6B8|Driftwood Medium Light;07|8F7B6E|Driftwood;08|6A5046|Driftwood Dark;09|55200E|Cocoa Very Dark;10|EDFED9|Tender Green Very Light;11|E2EDB5|Tender Green Light;12|CDD99A|Tender Green;13|BFF6E0|Nile Green Medium Light;14|D0FBB2|Apple Green Pale;15|D1EDA4|Apple Green;16|C9C258|Chartreuse Light;17|E5E272|Yellow Plum Light;18|D9D56D|Yellow Plum;19|F7C95F|Autumn Gold medium Light;20|F7AF93|Shrimp;21|D79982|Alizarin Light;22|BC604E|Alizarin;23|EDE2ED|Apple Blossom;24|E0D7EE|White Lavender;25|DAD2E9|Lavender Ultra Light;26|D7CAE6|Lavender Pale;27|F0EEF9|White Violet;28|9086A9|Eggplant Medium Light;29|674076|Eggplant;30|7D77A5|Blueberry Medium Light;31|50518D|Blueberry;32|4D2E8A|Blueberry Dark;33|9C599E|Fuschia;34|7D3064|Fuschia Dark;35|46052D|Fuschia Very Dark".split(";").map(function (s) {
+    var p = s.split("|"), hex = "#" + p[1];
+    p[2] = p[2].replace(/\s+/g, " ").replace(/Darkv$/, "Dark");
+    var rgb = [parseInt(p[1].slice(0, 2), 16), parseInt(p[1].slice(2, 4), 16), parseInt(p[1].slice(4, 6), 16)];
+    return { code: p[0], hex: hex, name: p[2], rgb: rgb, lab: toLab(rgb[0], rgb[1], rgb[2]) };
+  });
+  var DMC_BY_CODE = Object.create(null);
+  DMC.forEach(function (d, i) { DMC_BY_CODE[d.code] = i; });
+
+  // ===== 色の計算(sRGB→Lab、CIEDE2000) =====
+  function lin(c) { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  function toLab(r, g, b) {
+    var R = lin(r), G = lin(g), B = lin(b);
+    var x = (R * 0.4124 + G * 0.3576 + B * 0.1805) / 0.95047, y = R * 0.2126 + G * 0.7152 + B * 0.0722, z = (R * 0.0193 + G * 0.1192 + B * 0.9505) / 1.08883;
+    var f = function (t) { return t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116; };
+    var fx = f(x), fy = f(y), fz = f(z);
+    return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+  }
+  function de2000(a, b) {
+    var L1 = a[0], a1 = a[1], b1 = a[2], L2 = b[0], a2 = b[1], b2 = b[2];
+    var C1 = Math.hypot(a1, b1), C2 = Math.hypot(a2, b2), Cm = (C1 + C2) / 2;
+    var G = 0.5 * (1 - Math.sqrt(Math.pow(Cm, 7) / (Math.pow(Cm, 7) + 6103515625)));
+    var a1p = a1 * (1 + G), a2p = a2 * (1 + G);
+    var C1p = Math.hypot(a1p, b1), C2p = Math.hypot(a2p, b2);
+    var h1p = (Math.atan2(b1, a1p) * 180 / Math.PI + 360) % 360, h2p = (Math.atan2(b2, a2p) * 180 / Math.PI + 360) % 360;
+    var dLp = L2 - L1, dCp = C2p - C1p, dhp = 0;
+    if (C1p * C2p !== 0) { dhp = h2p - h1p; if (dhp > 180) dhp -= 360; else if (dhp < -180) dhp += 360; }
+    var dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin(dhp * Math.PI / 360);
+    var Lpm = (L1 + L2) / 2, Cpm = (C1p + C2p) / 2, hpm = h1p + h2p;
+    if (C1p * C2p !== 0) { if (Math.abs(h1p - h2p) > 180) hpm += (h1p + h2p < 360 ? 360 : -360); hpm /= 2; }
+    var T = 1 - 0.17 * Math.cos((hpm - 30) * Math.PI / 180) + 0.24 * Math.cos(2 * hpm * Math.PI / 180) + 0.32 * Math.cos((3 * hpm + 6) * Math.PI / 180) - 0.2 * Math.cos((4 * hpm - 63) * Math.PI / 180);
+    var dTh = 30 * Math.exp(-Math.pow((hpm - 275) / 25, 2));
+    var Rc = 2 * Math.sqrt(Math.pow(Cpm, 7) / (Math.pow(Cpm, 7) + 6103515625));
+    var Sl = 1 + 0.015 * Math.pow(Lpm - 50, 2) / Math.sqrt(20 + Math.pow(Lpm - 50, 2)), Sc = 1 + 0.045 * Cpm, Sh = 1 + 0.015 * Cpm * T;
+    var Rt = -Math.sin(2 * dTh * Math.PI / 180) * Rc;
+    return Math.sqrt(Math.pow(dLp / Sl, 2) + Math.pow(dCp / Sc, 2) + Math.pow(dHp / Sh, 2) + Rt * (dCp / Sc) * (dHp / Sh));
+  }
+  function nearestDmc(lab, n) {
+    var list = DMC.map(function (d, i) { return { i: i, d: de2000(lab, d.lab) }; });
+    list.sort(function (x, y) { return x.d - y.d; });
+    return list.slice(0, n || 1).map(function (x) { return x.i; });
+  }
+  function inkOn(rgb) { return (rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114) > 150 ? "#000" : "#fff"; }
+
+  // ===== 状態 =====
+  var img = null, imgName = "image", imgUrl = "";
+  var W = 0, H = 0, cells = null; // cells: 各目のパレット番号(-1=刺さない)
+  var pal = []; // { dmc: DMCの番号, sym, count }
+  var undo = [], penIdx = 0, edited = false, tool = "view", painting = null, genTimer = null;
+
+  // ===== 図案を作る =====
+  // 画像を「横W目×縦H目」に縮め、k-means(Lab)でK色にまとめてから、いちばん近いDMCの糸に置きかえる
+  function sample(w, h) {
+    var src = img, sw = img.width, sh = img.height;
+    // 半分ずつ縮めて、色がにごりにくいようにする
+    while (sw / 2 > w * 2 && sh / 2 > h * 2) {
+      var c = document.createElement("canvas");
+      c.width = Math.round(sw / 2); c.height = Math.round(sh / 2);
+      var x = c.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(src, 0, 0, c.width, c.height);
+      if (src !== img) src.width = src.height = 0;
+      src = c; sw = c.width; sh = c.height;
+    }
+    var out = document.createElement("canvas"); out.width = w; out.height = h;
+    var ctx = out.getContext("2d"); ctx.imageSmoothingQuality = "high"; ctx.drawImage(src, 0, 0, w, h);
+    var data = ctx.getImageData(0, 0, w, h).data;
+    if (src !== img) src.width = src.height = 0;
+    out.width = out.height = 0;
+    return data;
+  }
+  function rand(seed) { return function () { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+  function kmeans(pts, k) {
+    var n = pts.length, rnd = rand(12345), cent = [], dist = new Float64Array(n), i, j;
+    if (!n) return [];
+    cent.push(pts[Math.floor(rnd() * n)].slice());
+    for (i = 0; i < n; i++) dist[i] = Infinity;
+    while (cent.length < k) {
+      var last = cent[cent.length - 1], sum = 0;
+      for (i = 0; i < n; i++) {
+        var p = pts[i], d = (p[0] - last[0]) * (p[0] - last[0]) + (p[1] - last[1]) * (p[1] - last[1]) + (p[2] - last[2]) * (p[2] - last[2]);
+        if (d < dist[i]) dist[i] = d; sum += dist[i];
+      }
+      if (sum === 0) break;
+      var r = rnd() * sum;
+      for (i = 0; i < n; i++) { r -= dist[i]; if (r <= 0) break; }
+      cent.push(pts[Math.min(i, n - 1)].slice());
+    }
+    var asg = new Int32Array(n);
+    for (var it = 0; it < 12; it++) {
+      var acc = cent.map(function () { return [0, 0, 0, 0]; }), moved = 0;
+      for (i = 0; i < n; i++) {
+        var q = pts[i], best = 0, bd = Infinity;
+        for (j = 0; j < cent.length; j++) {
+          var c = cent[j], dd = (q[0] - c[0]) * (q[0] - c[0]) + (q[1] - c[1]) * (q[1] - c[1]) + (q[2] - c[2]) * (q[2] - c[2]);
+          if (dd < bd) { bd = dd; best = j; }
+        }
+        if (asg[i] !== best) moved++;
+        asg[i] = best; var a = acc[best]; a[0] += q[0]; a[1] += q[1]; a[2] += q[2]; a[3]++;
+      }
+      cent = cent.map(function (c, idx) { var a = acc[idx]; return a[3] ? [a[0] / a[3], a[1] / a[3], a[2] / a[3]] : c; });
+      if (!moved) break;
+    }
+    return cent;
+  }
+  function generate() {
+    if (!img) return;
+    painting = null; clearTimeout(genTimer);
+    try { generateCore(); } catch (e) { setSt("genSt", "図案を作れませんでした(メモリ不足の可能性)。目数を減らすか、小さな画像を選んでください。", true); }
+  }
+  function generateCore() {
+    var w = Math.min(MAX_W, +$("inW").value || 50);
+    var h = Math.max(1, Math.round(w * img.height / img.width));
+    if (h > MAX_W) { h = MAX_W; w = Math.max(1, Math.round(h * img.width / img.height)); }
+    var k = Math.min(MAX_K, +$("inK").value || 10);
+    var data = sample(w, h), white = $("optWhite").checked;
+    // 刺す目の色(Lab)を集める。同じ色はまとめて計算を減らす
+    var labs = new Array(w * h), pts = [], cache = {};
+    for (var i = 0; i < w * h; i++) {
+      var r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2], a = data[i * 4 + 3];
+      if (a < 128) { labs[i] = null; continue; }
+      var key = (r << 16) | (g << 8) | b, lab = cache[key] || (cache[key] = toLab(r, g, b));
+      if (white && lab[0] > 92 && Math.hypot(lab[1], lab[2]) < 8) { labs[i] = null; continue; }
+      labs[i] = lab; pts.push(lab);
+    }
+    if (!pts.length) {
+      cells = null; pal = []; undo = []; edited = false; refreshAll();
+      setSt("genSt", "刺す目がありません。透明な画像か、「白っぽい背景は刺さない」で全部が背景になっています。", true);
+      return;
+    }
+    var cent = kmeans(pts, k), fewColors = cent.length < k;
+    // 中心の色を糸にする(同じ糸になったものはまとめる)
+    var chosen = [];
+    cent.forEach(function (c) { var d = nearestDmc(c, 1)[0]; if (chosen.indexOf(d) < 0) chosen.push(d); });
+    // 各目を、選んだ糸のいちばん近い色にする
+    var memo = {}, nc = new Int16Array(w * h);
+    for (i = 0; i < w * h; i++) {
+      var L = labs[i];
+      if (!L) { nc[i] = -1; continue; }
+      var mk = L[0].toFixed(1) + "," + L[1].toFixed(1) + "," + L[2].toFixed(1);
+      if (memo[mk] === undefined) {
+        var best = 0, bd = Infinity;
+        for (var j = 0; j < chosen.length; j++) { var dd = de2000(L, DMC[chosen[j]].lab); if (dd < bd) { bd = dd; best = j; } }
+        memo[mk] = best;
+      }
+      nc[i] = memo[mk];
+    }
+    pal = chosen.map(function (d) { return { dmc: d }; });
+    if ($("optClean").checked) nc = cleanSingles(nc, w, h);
+    W = w; H = h; cells = nc;
+    penIdx = 0; compact(); undo = []; edited = false;
+    fitCell(); refreshAll();
+    var size = sizeText();
+    setSt("genSt", "横" + W + "目×縦" + H + "目・" + pal.length + "色の図案を作りました。" + size + (k > pal.length ? (fewColors ? "(画像の色が少ないため、" : "(近い糸が重なったため、") + "色は" + pal.length + "色になりました)" : ""));
+  }
+  // まわり8目に同じ色がない1目を、まわりでいちばん多い色にそろえる
+  function cleanSingles(src, w, h) {
+    var out = src.slice();
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var c = src[y * w + x]; if (c < 0) continue;
+      var cnt = {}, same = 0, any = 0;
+      for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        var xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+        var v = src[yy * w + xx]; if (v < 0) continue;
+        any++; if (v === c) same++; cnt[v] = (cnt[v] || 0) + 1;
+      }
+      if (same || any < 3) continue;
+      var best = c, bc = 0;
+      Object.keys(cnt).forEach(function (kk) { if (cnt[kk] > bc) { bc = cnt[kk]; best = +kk; } });
+      // 目の光や瞳のように、まわりとはっきり違う色の1目は残す
+      if (de2000(DMC[pal[c].dmc].lab, DMC[pal[best].dmc].lab) < 15) out[y * w + x] = best;
+    }
+    return out;
+  }
+  // 使われていない色を消し、目数の多い順に並べて記号をふり直す
+  function compact() {
+    var counts = pal.map(function () { return 0; });
+    for (var i = 0; i < cells.length; i++) if (cells[i] >= 0) counts[cells[i]]++;
+    var order = pal.map(function (p, i) { return i; }).filter(function (i) { return counts[i] > 0; });
+    order.sort(function (a, b) { return counts[b] - counts[a]; });
+    var map = {}; order.forEach(function (o, n) { map[o] = n; });
+    for (i = 0; i < cells.length; i++) if (cells[i] >= 0) cells[i] = map[cells[i]];
+    pal = order.map(function (o, n) { return { dmc: pal[o].dmc, count: counts[o], sym: SYMS[n % SYMS.length] }; });
+    penIdx = map[penIdx] !== undefined ? map[penIdx] : 0;
+  }
+  function recount() {
+    pal.forEach(function (p) { p.count = 0; });
+    for (var i = 0; i < cells.length; i++) if (cells[i] >= 0) pal[cells[i]].count++;
+  }
+  function sizeText() {
+    var per = (+$("inFabric").value || 14) / 0.254;
+    return "できあがりは約" + (W / per * 10).toFixed(1) + "×" + (H / per * 10).toFixed(1) + "cmです。";
+  }
+
+  // ===== 図案を描く =====
+  function drawChart(ctx, x0, y0, cs, view, cx0, cy0, cw, ch, numbers) {
+    // cx0,cy0: 描く範囲の左上の目、cw,ch: 描く目数
+    var fs = Math.max(6, Math.round(cs * 0.72));
+    ctx.font = "700 " + fs + "px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    for (var y = 0; y < ch; y++) for (var x = 0; x < cw; x++) {
+      var v = cells[(cy0 + y) * W + (cx0 + x)], px = x0 + x * cs, py = y0 + y * cs;
+      if (v < 0) { ctx.fillStyle = "#fff"; ctx.fillRect(px, py, cs, cs); continue; }
+      var d = DMC[pal[v].dmc];
+      if (view === "bw") { ctx.fillStyle = "#fff"; ctx.fillRect(px, py, cs, cs); }
+      else { ctx.fillStyle = d.hex; ctx.fillRect(px, py, cs, cs); }
+      if (view !== "img" && cs >= 9) { ctx.fillStyle = view === "bw" ? "#000" : inkOn(d.rgb); ctx.fillText(pal[v].sym, px + cs / 2, py + cs / 2 + 1); }
+    }
+    if (view === "img" && cs < 6) return;
+    // 罫線(10目ごとに太く)
+    for (var gx = 0; gx <= cw; gx++) {
+      var g10 = (cx0 + gx) % 10 === 0;
+      ctx.fillStyle = g10 ? "#222" : "rgba(0,0,0,.28)";
+      ctx.fillRect(x0 + gx * cs - (g10 ? 1 : 0), y0, g10 ? 2 : 1, ch * cs);
+    }
+    for (var gy = 0; gy <= ch; gy++) {
+      var h10 = (cy0 + gy) % 10 === 0;
+      ctx.fillStyle = h10 ? "#222" : "rgba(0,0,0,.28)";
+      ctx.fillRect(x0, y0 + gy * cs - (h10 ? 1 : 0), cw * cs, h10 ? 2 : 1);
+    }
+    if (!numbers) return;
+    // ふちの数字(10目ごと)とまん中の三角
+    var nf = Math.max(10, Math.round(cs * 0.8));
+    ctx.fillStyle = "#333"; ctx.font = "700 " + nf + "px sans-serif";
+    for (gx = 0; gx <= cw; gx++) { var gnum = cx0 + gx; if (gnum % 10 === 0 && gnum > 0) { ctx.textAlign = "center"; ctx.textBaseline = "bottom"; ctx.fillText(String(gnum), x0 + gx * cs, y0 - 4); } }
+    for (gy = 0; gy <= ch; gy++) { var hnum = cy0 + gy; if (hnum % 10 === 0 && hnum > 0) { ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.fillText(String(hnum), x0 - 5, y0 + gy * cs); } }
+    var mx = W / 2, my = H / 2, t = Math.max(6, cs * 0.6);
+    ctx.fillStyle = "#b3261e";
+    if (mx >= cx0 && mx <= cx0 + cw) { var ax = x0 + (mx - cx0) * cs; tri(ctx, ax, y0 + ch * cs + 2, t, "up"); if (cy0 === 0) tri(ctx, ax, y0 - nf - 6, t, "down"); }
+    if (my >= cy0 && my <= cy0 + ch) { var ay = y0 + (my - cy0) * cs; tri(ctx, x0 + cw * cs + 2, ay, t, "left"); }
+  }
+  function tri(ctx, x, y, s, dir) {
+    ctx.beginPath();
+    if (dir === "up") { ctx.moveTo(x, y); ctx.lineTo(x - s / 2, y + s); ctx.lineTo(x + s / 2, y + s); }
+    else if (dir === "down") { ctx.moveTo(x, y + s); ctx.lineTo(x - s / 2, y); ctx.lineTo(x + s / 2, y); }
+    else { ctx.moveTo(x, y); ctx.lineTo(x + s, y - s / 2); ctx.lineTo(x + s, y + s / 2); }
+    ctx.closePath(); ctx.fill();
+  }
+
+  var cv = $("cv"), M = 34; // 余白(数字用)
+  // 図案の幅に合わせて表示の大きさを決める
+  function fitCell() {
+    var avail = $("pvWrap").clientWidth - M * 2 - 4;
+    $("inCell").value = Math.max(4, Math.min(30, Math.floor(avail / W)));
+  }
+  // 表示用のキャンバスが大きくなりすぎないように(約1600万画素まで)
+  function previewCell() { return Math.max(2, Math.min(+$("inCell").value || 12, Math.floor(Math.sqrt(16e6 / (W * H))))); }
+  function drawPreview() {
+    var ctx = cv.getContext("2d");
+    $("pvEmpty").classList.toggle("hidden", !!cells); cv.classList.toggle("hidden", !cells);
+    if (!cells) { $("sum").textContent = ""; return; }
+    var cs = previewCell(), view = $("inView").value;
+    cv.width = W * cs + M * 2; cv.height = H * cs + M * 2;
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cv.width, cv.height);
+    drawChart(ctx, M, M, cs, view, 0, 0, W, H, true);
+    var stitches = 0; pal.forEach(function (p) { stitches += p.count; });
+    $("sum").textContent = "横" + W + "目×縦" + H + "目・" + pal.length + "色・" + stitches.toLocaleString() + "目 / " + sizeText();
+    cv.setAttribute("aria-label", "クロスステッチの図案(横" + W + "目×縦" + H + "目、" + pal.length + "色)");
+    cv.classList.toggle("paint", tool !== "view");
+    $("inCell").setAttribute("aria-valuetext", "1目" + cs + "ピクセル");
+  }
+  // 塗った1目だけ描き直す
+  function drawOneCell(i) {
+    var cs = previewCell(), x = i % W, y = Math.floor(i / W);
+    drawChart(cv.getContext("2d"), M + x * cs, M + y * cs, cs, $("inView").value, x, y, 1, 1, false);
+  }
+  function drawPalette() {
+    var box = $("pal"); box.textContent = "";
+    if (!pal.length) { var p0 = document.createElement("p"); p0.className = "fine"; p0.style.margin = "0"; p0.textContent = "①で画像を選ぶと、ここに色が並びます。"; box.appendChild(p0); }
+    pal.forEach(function (p, i) {
+      var d = DMC[p.dmc], b = document.createElement("button");
+      b.type = "button"; b.className = i === penIdx ? "on" : "";
+      b.setAttribute("aria-pressed", i === penIdx ? "true" : "false");
+      b.setAttribute("aria-label", "ペンの色: 記号" + p.sym + "、DMC " + d.code);
+      var sw = document.createElement("span"); sw.className = "sw"; sw.style.background = d.hex; sw.style.color = inkOn(d.rgb); sw.textContent = p.sym;
+      var t = document.createElement("span"); t.textContent = "DMC " + d.code;
+      b.appendChild(sw); b.appendChild(t);
+      b.addEventListener("click", function () {
+        penIdx = i;
+        Array.prototype.forEach.call(box.children, function (el, k) { el.className = k === i ? "on" : ""; el.setAttribute("aria-pressed", k === i ? "true" : "false"); });
+        if (tool === "view") setTool("pen");
+      });
+      box.appendChild(b);
+    });
+  }
+  function drawList() {
+    var tb = $("list").querySelector("tbody"); tb.textContent = "";
+    pal.forEach(function (p, i) {
+      var d = DMC[p.dmc], tr = document.createElement("tr");
+      var td1 = document.createElement("td"), sw = document.createElement("span");
+      sw.className = "sw"; sw.style.background = d.hex; sw.style.color = inkOn(d.rgb); sw.textContent = p.sym; td1.appendChild(sw);
+      var td2 = document.createElement("td"), sel = document.createElement("select");
+      sel.setAttribute("aria-label", "記号" + p.sym + "の糸番号");
+      var cands = nearestDmc(d.lab, 8);
+      cands.forEach(function (ci) {
+        var o = document.createElement("option"); o.value = ci; o.textContent = DMC[ci].code + (ci === p.dmc ? "(いまの色)" : "");
+        if (ci === p.dmc) o.selected = true; sel.appendChild(o);
+      });
+      sel.addEventListener("change", function () {
+        var ni = +this.value, dup = -1;
+        pushUndo(cells.slice());
+        pal.forEach(function (q, k) { if (k !== i && q.dmc === ni) dup = k; });
+        if (dup >= 0) { // 同じ糸がすでにあれば1色にまとめる
+          for (var c = 0; c < cells.length; c++) if (cells[c] === i) cells[c] = dup;
+          compact();
+          setSt("outSt", "同じ糸の色があったので、1色にまとめました。");
+        } else pal[i].dmc = ni;
+        edited = true; refreshAll();
+        var row = $("list").querySelector("tbody").rows[dup >= 0 ? Math.min(dup, pal.length - 1) : i];
+        if (row) row.querySelector("select").focus();
+      });
+      td2.appendChild(sel);
+      var td3 = document.createElement("td"); td3.textContent = d.name;
+      var td4 = document.createElement("td"); td4.className = "num"; td4.textContent = p.count.toLocaleString();
+      tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
+      tb.appendChild(tr);
+    });
+  }
+  function refreshAll() {
+    drawPreview(); drawPalette(); drawList();
+    var on = !!cells;
+    $("printBtn").disabled = !on; $("pngBtn").disabled = !on;
+    
+    $("undoBtn").disabled = !undo.length;
+    $("printNote").textContent = !on ? "" : PAGE_SPLIT
+      ? "A4縦に、1ページ" + PAGE_COLS + "×" + PAGE_ROWS + "目ずつ分けて印刷します(全" + pageCount() + "ページ+糸の一覧1ページ)。"
+      : "A4縦1ページに図案を収めて印刷します(+糸の一覧1ページ)。" + (W > 60 || H > 90 ? "横60目以下だと記号が大きく見やすくなります。" : "目数が多いとマスが小さくなります。");
+  }
+  function pageCount() { return Math.ceil(W / PAGE_COLS) * Math.ceil(H / PAGE_ROWS); }
+
+  // ===== 手直し(ペン・消しゴム) =====
+  function setTool(t) {
+    tool = t;
+    document.querySelectorAll("input[name=tool]").forEach(function (i) { i.checked = i.value === t; });
+    document.querySelectorAll("#toolSeg label").forEach(function (l) { l.classList.toggle("on", l.querySelector("input").checked); });
+    cv.classList.toggle("paint", t !== "view");
+    $("modeNote").textContent = t === "pen" ? "ペンで塗れます(図案を動かすときは③で「見るだけ」に)" : t === "erase" ? "消しゴムで消せます(図案を動かすときは③で「見るだけ」に)" : "";
+  }
+  document.querySelectorAll("input[name=tool]").forEach(function (i) { i.addEventListener("change", function () { setTool(this.value); }); });
+  function cellAt(e) {
+    var r = cv.getBoundingClientRect(), s = cv.width / r.width, cs = previewCell();
+    var x = Math.floor(((e.clientX - r.left) * s - M) / cs), y = Math.floor(((e.clientY - r.top) * s - M) / cs);
+    return x >= 0 && y >= 0 && x < W && y < H ? y * W + x : -1;
+  }
+  function paintAt(e) {
+    var i = cellAt(e); if (i < 0) return;
+    var v = tool === "erase" ? -1 : penIdx;
+    if (cells[i] === v || (v >= 0 && !pal[v])) return;
+    cells[i] = v; painting.changed = true; drawOneCell(i);
+  }
+  cv.addEventListener("pointerdown", function (e) {
+    if (!cells || tool === "view" || painting || e.button !== 0) return;
+    e.preventDefault();
+    painting = { id: e.pointerId, before: cells.slice(), changed: false };
+    try { cv.setPointerCapture(e.pointerId); } catch (err) {} paintAt(e);
+  });
+  cv.addEventListener("pointermove", function (e) { if (painting && e.pointerId === painting.id) paintAt(e); });
+  function endPaint(e) {
+    if (!painting || e.pointerId !== painting.id) return;
+    if (painting.changed) {
+      pushUndo(painting.before);
+      recount(); refreshAll();
+      if (!edited) track("zuan_edit", {});
+      edited = true;
+    }
+    painting = null;
+  }
+  cv.addEventListener("pointerup", endPaint);
+  cv.addEventListener("pointercancel", endPaint);
+  function pushUndo(before) {
+    undo.push({ w: W, h: H, pen: penIdx, cells: before, pal: pal.map(function (p) { return { dmc: p.dmc, sym: p.sym, count: p.count }; }) });
+    if (undo.length > 50) undo.shift();
+  }
+  $("undoBtn").addEventListener("click", function () {
+    var u = undo.pop(); if (!u || u.w !== W || u.h !== H) { undo = []; refreshAll(); return; }
+    cells = u.cells; pal = u.pal; penIdx = Math.min(u.pen, pal.length - 1); recount(); refreshAll();
+  });
+
+  // ===== 印刷・画像 =====
+  var A4W = 1240, A4H = 1754; // 150dpi
+  var DATA_CREDIT = "色データ: craft-color-codes by MakeBead (makebead.com) / CC BY 4.0 (creativecommons.org/licenses/by/4.0/)";
+  function creditLine(ctx, w, h) {
+    if (!CREDIT) return;
+    ctx.fillStyle = "#666"; ctx.font = "400 18px sans-serif"; ctx.textAlign = "right"; ctx.textBaseline = "bottom";
+    ctx.fillText("クロスステッチ図案メーカー(無料版) uuhai0625.github.io/cross-stitch-zuan/", w - 30, h - 16);
+  }
+  function chartPage(cx0, cy0, cw, ch, label) {
+    var c = document.createElement("canvas"); c.width = A4W; c.height = A4H;
+    var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, A4W, A4H);
+    var top = 110, left = 70, availW = A4W - left - 60, availH = A4H - top - 70;
+    var cs = Math.max(4, Math.floor(Math.min(availW / cw, availH / ch, 24)));
+    ctx.fillStyle = "#222"; ctx.font = "700 26px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    ctx.fillText(label, left, 30);
+    drawChart(ctx, left, top, cs, $("inView").value === "bw" ? "bw" : "sym", cx0, cy0, cw, ch, true);
+    creditLine(ctx, A4W, A4H);
+    return c;
+  }
+  function listPage() {
+    var c = document.createElement("canvas"); c.width = A4W; c.height = A4H;
+    var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, A4W, A4H);
+    ctx.fillStyle = "#222"; ctx.font = "700 30px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    ctx.fillText("使う糸の一覧(DMC 25番刺しゅう糸の目安)", 70, 40);
+    ctx.font = "400 20px sans-serif"; ctx.fillStyle = "#444";
+    ctx.fillText("横" + W + "目×縦" + H + "目・" + pal.length + "色 / " + $("inFabric").selectedOptions[0].textContent + "で" + sizeText().replace("できあがりは", "").replace("です。", ""), 70, 86);
+    var colW = 550, rowH = 38, perCol = Math.floor((A4H - 220) / rowH);
+    pal.forEach(function (p, i) {
+      var d = DMC[p.dmc], col = Math.floor(i / perCol), x = 70 + col * colW, y = 140 + (i % perCol) * rowH;
+      ctx.fillStyle = d.hex; ctx.fillRect(x, y, 30, 30); ctx.strokeStyle = "#999"; ctx.strokeRect(x + .5, y + .5, 29, 29);
+      ctx.fillStyle = inkOn(d.rgb); ctx.font = "700 20px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(p.sym, x + 15, y + 16);
+      ctx.fillStyle = "#222"; ctx.textAlign = "left"; ctx.font = "700 20px sans-serif"; ctx.fillText(d.code, x + 44, y + 16);
+      ctx.font = "400 17px sans-serif"; ctx.fillText(d.name.slice(0, 30), x + 130, y + 16);
+      ctx.textAlign = "right"; ctx.fillText(p.count.toLocaleString() + "目", x + colW - 30, y + 16);
+    });
+    ctx.fillStyle = "#666"; ctx.font = "400 15px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+    ctx.fillText("糸番号は画面の色に近いものの目安です。DMCはフランスのDMC社の商標です(本ツールは非公式)。", 70, A4H - 66);
+    ctx.fillText(DATA_CREDIT, 70, A4H - 46);
+    creditLine(ctx, A4W, A4H);
+    return c;
+  }
+  function pages() {
+    var out = [];
+    if (PAGE_SPLIT) {
+      var nx = Math.ceil(W / PAGE_COLS), ny = Math.ceil(H / PAGE_ROWS), n = 0;
+      for (var py = 0; py < ny; py++) for (var px = 0; px < nx; px++) {
+        n++;
+        var cx0 = px * PAGE_COLS, cy0 = py * PAGE_ROWS, cw = Math.min(PAGE_COLS, W - cx0), ch = Math.min(PAGE_ROWS, H - cy0);
+        out.push(chartPage(cx0, cy0, cw, ch, "図案 " + n + "/" + nx * ny + "ページ(横" + (cx0 + 1) + "〜" + (cx0 + cw) + "目・縦" + (cy0 + 1) + "〜" + (cy0 + ch) + "目)"));
+      }
+    } else out.push(chartPage(0, 0, W, H, "図案(横" + W + "目×縦" + H + "目)"));
+    out.push(listPage());
+    return out;
+  }
+  function toBlob(c) { return new Promise(function (res) { c.toBlob(function (b) { res(b); }, "image/png"); }); }
+  var printUrls = [];
+  function clearPrint() { printUrls.forEach(function (u) { URL.revokeObjectURL(u); }); printUrls = []; $("printArea").textContent = ""; document.body.classList.remove("printing"); }
+  var printing = false;
+  $("printBtn").addEventListener("click", function () {
+    if (!cells || printing) return;
+    clearPrint(); printing = true; $("printBtn").disabled = true;
+    setSt("outSt", "印刷用の画像を作っています…");
+    var list = pages();
+    var fail = function () { printing = false; $("printBtn").disabled = !cells; clearPrint(); setSt("outSt", "印刷用の画像を作れませんでした(大きすぎる可能性)。目数を減らしてください。", true); };
+    Promise.all(list.map(toBlob)).then(function (blobs) {
+      list.forEach(function (c) { c.width = c.height = 0; });
+      if (blobs.some(function (b) { return !b; })) { fail(); return; }
+      var area = $("printArea"), loaded = 0, bad = false;
+      blobs.forEach(function (b, i) {
+        var u = URL.createObjectURL(b), im = new Image(); printUrls.push(u);
+        im.alt = "印刷ページ" + (i + 1);
+        im.onload = function () {
+          if (bad || ++loaded !== blobs.length) return;
+          printing = false; $("printBtn").disabled = !cells;
+          document.body.classList.add("printing");
+          setSt("outSt", "印刷の画面を開きました(" + blobs.length + "ページ)。用紙はA4縦、倍率は「用紙に合わせる」がおすすめです。");
+          window.print();
+        };
+        im.onerror = function () { if (!bad) { bad = true; fail(); } };
+        im.src = u; area.appendChild(im);
+      });
+      track("zuan_print", { w: W, h: H, colors: pal.length, pages: blobs.length });
+    }).catch(fail);
+  });
+  window.addEventListener("afterprint", function () { setTimeout(clearPrint, 500); });
+  if (window.matchMedia) {
+    var pmq = window.matchMedia("print");
+    var onPm = function (e) { if (!e.matches && document.body.classList.contains("printing")) setTimeout(clearPrint, 500); };
+    if (pmq.addEventListener) pmq.addEventListener("change", onPm); else if (pmq.addListener) pmq.addListener(onPm);
+  }
+  function fileBase() { return Array.from(imgName.replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|\x00-\x1f]/g, "_")).slice(0, 30).join("") || "image"; }
+  function download(blob, name) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+  $("pngBtn").addEventListener("click", function () {
+    if (!cells) return;
+    var cs = 16, m = 50, listH = Math.ceil(pal.length / 2) * 30 + 70;
+    var c = document.createElement("canvas"); c.width = W * cs + m * 2; c.height = H * cs + m * 2 + listH + (CREDIT ? 70 : 40);
+    if (c.width < 760) c.width = 760;
+    var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+    drawChart(ctx, m, m, cs, $("inView").value === "img" ? "img" : $("inView").value, 0, 0, W, H, true);
+    var y0 = H * cs + m * 2;
+    ctx.fillStyle = "#222"; ctx.font = "700 18px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    ctx.fillText("横" + W + "目×縦" + H + "目・" + pal.length + "色(糸番号はDMC 25番の目安)", m, y0);
+    pal.forEach(function (p, i) {
+      var d = DMC[p.dmc], x = m + (i % 2) * 360, y = y0 + 34 + Math.floor(i / 2) * 30;
+      ctx.fillStyle = d.hex; ctx.fillRect(x, y, 24, 24);
+      ctx.fillStyle = inkOn(d.rgb); ctx.font = "700 15px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(p.sym, x + 12, y + 13);
+      ctx.fillStyle = "#222"; ctx.textAlign = "left"; ctx.font = "400 15px sans-serif";
+      ctx.fillText(d.code + "  " + d.name.slice(0, 20) + "  " + p.count + "目", x + 32, y + 13);
+    });
+    ctx.fillStyle = "#666"; ctx.font = "400 13px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+    ctx.fillText(DATA_CREDIT, m, c.height - (CREDIT ? 44 : 12));
+    creditLine(ctx, c.width, c.height);
+    toBlob(c).then(function (b) {
+      c.width = c.height = 0;
+      if (!b) { setSt("outSt", "画像を作れませんでした(大きすぎる可能性)。目数を減らしてください。", true); return; }
+      download(b, "図案_" + fileBase() + ".png");
+      setSt("outSt", "画像で保存しました。");
+      track("zuan_png", { w: W, h: H, colors: pal.length });
+    });
+  });
+
+  
+
+  // ===== 画像の読み込み =====
+  function loadFile(f) {
+    if (!f) return;
+    if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { setSt("imgSt", "PNG・JPEG・WebPの画像を選んでください。", true); return; }
+    if (f.size > 40 * 1024 * 1024) { setSt("imgSt", "画像が大きすぎます(40MBまで)。", true); return; }
+    var url = URL.createObjectURL(f), im = new Image();
+    setSt("imgSt", "読み込んでいます…");
+    im.onload = function () {
+      if (im.width * im.height > MAX_PIXELS) { URL.revokeObjectURL(url); setSt("imgSt", "画像の画素数が多すぎます(5000万画素まで)。小さくしてから選んでください。", true); return; }
+      if (edited && !confirm("新しい画像にすると、手直しした内容は消えます。よろしいですか?")) { URL.revokeObjectURL(url); setSt("imgSt", "画像の読み込みをやめました。"); return; }
+      if (imgUrl) URL.revokeObjectURL(imgUrl);
+      imgUrl = url; img = im; imgName = f.name || "image";
+      $("dropTitle").textContent = "画像を選び直す(今: " + Array.from(imgName).slice(0, 24).join("") + ")";
+      var first = !cells, narrow = window.innerWidth <= 860;
+      setSt("imgSt", "読み込みました(" + im.width + "×" + im.height + ")。" + (narrow ? "下の「図案」" : "右の「図案」") + "に図案ができました。");
+      generate();
+      if (first && narrow) $("pv-card").scrollIntoView({ behavior: "smooth", block: "start" });
+      track("zuan_image_load", {});
+    };
+    im.onerror = function () { URL.revokeObjectURL(url); setSt("imgSt", "画像を読み込めませんでした。", true); };
+    im.src = url;
+  }
+  $("inFile").addEventListener("change", function () { loadFile(this.files && this.files[0]); this.value = ""; });
+  var drop = $("drop");
+  ["dragenter", "dragover"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("over"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("over"); }); });
+  drop.addEventListener("drop", function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; loadFile(f); });
+
+  // ===== 設定 =====
+  function regen() {
+    syncLabels();
+    if (!img) { if (cells) setSt("genSt", "作り直すには①で画像を選んでください。"); return; }
+    if (edited && !confirm("設定を変えると、手直しした内容は消えて作り直しになります。よろしいですか?")) return false;
+    edited = false;
+    clearTimeout(genTimer); genTimer = setTimeout(generate, 200);
+  }
+  function syncLabels() {
+    $("wVal").textContent = $("inW").value + "目"; $("kVal").textContent = $("inK").value + "色";
+    $("inW").setAttribute("aria-valuetext", $("inW").value + "目"); $("inK").setAttribute("aria-valuetext", $("inK").value + "色");
+    $("wHint").textContent = "10〜" + MAX_W + "目" + (EDITION === "full" ? "" : "(買い切り版は250目まで)") + "。縦の目数は画像の形から決まります";
+    $("kHint").textContent = "2〜" + MAX_K + "色" + (EDITION === "full" ? "" : "(買い切り版は40色まで)");
+    $("sizeHint").textContent = cells ? sizeText() : "";
+  }
+  $("inW").max = MAX_W; $("inK").max = MAX_K;
+  // 範囲のつまみは離したときに作り直す(手直しの確認を何度も出さないため)
+  ["inW", "inK"].forEach(function (id) {
+    $(id).addEventListener("input", syncLabels);
+    $(id).addEventListener("change", function () { if (regen() === false) restore(); });
+  });
+  ["optWhite", "optClean"].forEach(function (id) { $(id).addEventListener("change", function () { if (regen() === false) { this.checked = !this.checked; } }); });
+  var lastW = $("inW").value, lastK = $("inK").value;
+  function restore() { $("inW").value = lastW; $("inK").value = lastK; syncLabels(); }
+  ["inW", "inK"].forEach(function (id) { $(id).addEventListener("change", function () { lastW = $("inW").value; lastK = $("inK").value; }); });
+  $("inFabric").addEventListener("change", function () { syncLabels(); if (cells) refreshAll(); });
+  $("inView").addEventListener("change", drawPreview);
+  $("inCell").addEventListener("input", drawPreview);
+
+  if (EDITION === "full") {
+    $("pro-section").classList.add("hidden");
+  }
+  if (EDITION !== "full") {
+    $("privacyNote").innerHTML = '選んだ画像も入力した内容もどこにも送信されません(すべてこのブラウザの中で処理します)。このページでは利用状況の把握のためにアクセス解析(Google Analytics)を使っています。<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用について</a>';
+  }
+
+  syncLabels(); setTool("view");
+  refreshAll();
+})();
+</script>
+<!--UPSELL_JS_START-->
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  if (q.get("obs") === "1" || document.documentElement.classList.contains("obs")) return;
+  // 小さな案内(トースト)は、買い切り版がパソコン向けなので、マウス操作の広い画面でだけ出す
+  var pc = !!(window.matchMedia && matchMedia("(pointer:fine) and (min-width:720px)").matches);
+  var buy = document.getElementById("buyLink");
+  var pro = document.getElementById("pro-section");
+  if (!buy || !pro) return;
+  var FEATS = [];
+  var path = location.pathname.replace(/index\.html$/, "");
+  var KEY_CLOSED = "upsell_closed_until:" + path, KEY_SHOWN = "upsell_shown:" + path;
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function sess(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
+  function gtagEv(name, p) { if (!window.dataLayer) return; (function () { window.dataLayer.push(arguments); })("event", name, p || {}); }
+
+  var shown = false;
+  function blocked() {
+    if (shown || sess(KEY_SHOWN) === "1") return true;
+    var until = Number(store(KEY_CLOSED) || 0);
+    return until && Date.now() < until;
+  }
+  function feats() {
+    if (FEATS.length) return FEATS;
+    var out = [];
+    var lis = pro.querySelectorAll(".feat-list li");
+    for (var i = 0; i < lis.length && out.length < 3; i++) {
+      var all = lis[i].textContent.replace(/\s+/g, " ").trim();
+      if (/スマホ|HTMLファイル|パソコンで使う/.test(all)) continue;
+      var st = lis[i].querySelectorAll("strong");
+      var t = st.length === 1 ? st[0].textContent : all.split(/[::。]/)[0];
+      t = t.replace(/[((][^()()]*[))]/g, "").replace(/\s+/g, " ").trim();
+      if (t.length > 40) t = t.slice(0, 39) + "…";
+      if (t) out.push(t);
+    }
+    return out;
+  }
+  // 「〜してください」「できません」など、失敗の表示が出ていたら案内しない
+  function failed() {
+    var els = document.querySelectorAll('[role="status"], [role="alert"], [aria-live]');
+    for (var i = 0; i < els.length; i++) {
+      if (pro.contains(els[i]) || !els[i].offsetParent) continue;
+      if (/ください|できません|できませんでした|失敗|ありません|エラー/.test(els[i].textContent)) return true;
+    }
+    return false;
+  }
+  function proVisible() {
+    var r = pro.getBoundingClientRect();
+    return r.top < innerHeight && r.bottom > 0;
+  }
+  function show(trigger) {
+    if (!pc || blocked() || (trigger === "action" && failed()) || proVisible()) return;
+    var list = feats();
+    if (!list.length) return;
+    shown = true;
+    sess(KEY_SHOWN, "1");
+    var box = document.createElement("aside");
+    box.className = "upsell-toast";
+    box.setAttribute("aria-label", "買い切り版のご案内");
+    box.setAttribute("aria-live", "polite");
+    document.body.appendChild(box);
+    var p = document.createElement("p");
+    p.textContent = trigger === "limit"
+      ? "この先は買い切り版の機能です。パソコン用の買い切り版(¥100・税込)なら:"
+      : "うまくできましたか? パソコン用の買い切り版(¥100・税込)なら、さらに:";
+    var ul = document.createElement("ul");
+    list.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+    var a = document.createElement("a");
+    a.className = "upsell-go";
+    a.id = "upsellToastLink";
+    a.href = buy.href;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "BOOTHで見る(新しいタブ)";
+    var bg = getComputedStyle(buy).backgroundColor;
+    if (bg && !/rgba?\(0, 0, 0, 0\)|transparent/.test(bg)) a.style.background = bg;
+    var x = document.createElement("button");
+    x.type = "button";
+    x.className = "upsell-x";
+    x.setAttribute("aria-label", "この案内を閉じる");
+    x.textContent = "×";
+    function close(remember) {
+      if (box.parentNode) box.parentNode.removeChild(box);
+      document.removeEventListener("keydown", onKey);
+      if (remember) store(KEY_CLOSED, String(Date.now() + 7 * 864e5));
+    }
+    // Escはページ側の操作(選択解除など)にも使われるので、案内の中にフォーカスがある時だけ閉じる
+    function onKey(e) { if (e.key === "Escape" && box.contains(document.activeElement)) close(true); }
+    x.addEventListener("click", function () { close(true); });
+    a.addEventListener("click", function () { setTimeout(function () { close(false); }, 0); });
+    document.addEventListener("keydown", onKey);
+    setTimeout(function () {
+      var note = document.createElement("small");
+      note.className = "upsell-note";
+      note.textContent = "スマホではファイルを開けない機種があります";
+      box.appendChild(x); box.appendChild(p); box.appendChild(ul); box.appendChild(a); box.appendChild(note);
+    }, 50);
+    gtagEv("upsell_show", { trigger: trigger });
+  }
+
+  // 保存・コピー・印刷・書き出しを押した直後(結果を受け取れたタイミング)
+  var OK = /保存|コピー|印刷|書き出|ダウンロード|共有|PDF/;
+  var NG = /読み込|リセット|消|削除|このブラウザに保存|確認|イメージを見る|戻/;
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, a[download], input[type=button], input[type=submit]") : null;
+    if (!el || el.closest("#pro-section, .upsell-toast, #anshin")) return;
+    var label = (el.textContent || el.value || "").replace(/\s+/g, " ");
+    if (!OK.test(label) || NG.test(label)) return;
+    setTimeout(function () { show("action"); }, 1500);
+  }, true);
+
+  // 無料版の上限まわり
+  // (1) ページが出す「買い切り版」の一文に、購入欄へのリンクを足す(スマホでも)。🔒のタブは薄く表示されているので入れない
+  // (2) 案内(パソコンのみ)は、はっきりした合図のときだけ出す: 🔒のクリック・買い切り版にふれたalert・
+  //     初めて出た「〜まで/のみ/以降/入っていません」の上限の一文(計算のたびに出る誘導文や、同じ文の描き直しでは出さない)
+  var SKIP = "#pro-section, .upsell-toast, .upsell-top, #anshin, a, button, label, select, option, h1, h2, h3, .badge, header, footer, nav, textarea, pre, code, [contenteditable], svg";
+  var LIMIT = /まで|のみ|以降|入っていません/;
+  var seenText = {}, ready = false;
+  function goPro(e) {
+    if (e) e.preventDefault();
+    pro.setAttribute("tabindex", "-1");
+    pro.scrollIntoView({ behavior: "smooth", block: "start" });
+    pro.focus({ preventScroll: true });
+  }
+  function linkify(root, deep) {
+    var limitHit = false;
+    var els = root.matches("p, div, span, li") ? [root] : [];
+    if (deep) els = els.concat([].slice.call(root.querySelectorAll("p, div, span, li")));
+    els.forEach(function (el) {
+      if (el.closest(SKIP) || el.closest('[role="radio"], [role="option"], [role="tab"], [role="button"], [tabindex]:not([tabindex="-1"])') || el.querySelector("a, button, p, div, li, input, label")) return;
+      // 選択肢の「○○(買い切り版)」ではなく、文として買い切り版にふれている要素だけ
+      var own = "";
+      for (var n = el.firstChild; n; n = n.nodeType === 1 && n.className === "upsell-inline" ? null : n.nextSibling) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.trim();
+      if (own.indexOf("買い切り版") < 0 || /[((]買い切り版[))]$/.test(own) || /^🔒/.test(own)) return;
+      var key = own.replace(/\d+/g, "#");
+      if (ready && !seenText[key] && LIMIT.test(own) && !el.closest(".teaser, #teaser, [id$=teaser], #tz")) limitHit = true;
+      seenText[key] = 1;
+      if (el.querySelector(".upsell-inline")) return;
+      var a = document.createElement("a");
+      a.className = "upsell-inline";
+      a.href = "#pro-section";
+      a.setAttribute("aria-label", "くわしく:買い切り版の説明へ移動");
+      a.textContent = "くわしく";
+      var ar = document.createElement("span");
+      ar.setAttribute("aria-hidden", "true");
+      ar.textContent = " ↓";
+      a.appendChild(ar);
+      a.addEventListener("click", goPro);
+      el.appendChild(document.createTextNode(" "));
+      el.appendChild(a);
+    });
+    return limitHit;
+  }
+  linkify(document.body, true);
+  setTimeout(function () { ready = true; }, 1500);
+  var topLink = document.querySelector("#upsellTop a");
+  if (topLink) topLink.addEventListener("click", goPro);
+  new MutationObserver(function (ms) {
+    // 変わったところだけを調べる(足された要素はその中も、文字の変更は親要素だけ)
+    var hit = false, done = new Set();
+    function check(t, deep) {
+      if (!t || t.nodeType !== 1 || done.has(t) || t.closest(".upsell-toast")) return;
+      done.add(t);
+      if (linkify(t, deep)) hit = true;
+    }
+    ms.forEach(function (m) {
+      if (m.type === "characterData") { check(m.target.parentNode, false); return; }
+      check(m.target, false);
+      for (var i = 0; i < m.addedNodes.length; i++) if (m.addedNodes[i].nodeType === 1) check(m.addedNodes[i], true);
+    });
+    if (hit) setTimeout(function () { show("limit"); }, 800);
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, div, span, li") : null;
+    var first = el && el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild.nodeValue : "";
+    if (!/^\s*🔒/.test(first) || e.target.closest("#pro-section")) return;
+    if (pc) setTimeout(function () { show("limit"); }, 300); else goPro();
+  }, true);
+  var origAlert = window.alert;
+  window.alert = function (msg) {
+    var r = origAlert.apply(window, arguments);
+    if (/買い切り版/.test(String(msg))) setTimeout(function () { show("limit"); }, 300);
+    return r;
+  };
+})();
+</script>
+<!--UPSELL_JS_END-->
+</body>
+</html>
